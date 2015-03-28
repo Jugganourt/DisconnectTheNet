@@ -1,6 +1,6 @@
 package map;
 
-public class Link {
+public class Link implements Comparable<Link>{
 	private String from;
 	private String to;
 
@@ -27,5 +27,10 @@ public class Link {
 	@Override
 	public String toString(){
 		return "(" + from + ", " + to + ")";
+	}
+
+	@Override
+	public int compareTo(Link o) {
+		return this.equals(o) ? 0 : 1;
 	}
 }

@@ -1,40 +1,41 @@
 package map;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import requests.GetLinks;
 
 public class GenerateNodes {
 
-	Map<String, Node> urlToNode = new HashMap<String,Node>(); 
+	Map<String, Node> urlToNode = new TreeMap<String, Node>();
 	Set<Link> linksFound = new HashSet<Link>();
-	
-	public GenerateNodes(String url, int numResults){
-		
+
+	public GenerateNodes(String url, int numResults) {
+
 		GetLinks start = new GetLinks(url, numResults);
-		
+
 		for (String site : start.getField("Domain")) {
 			linksFound.add(new Link(url, site));
 		}
-		
-		Node temp = new Node(url);	
+
+		Node temp = new Node(url);
 		urlToNode.put(url, temp);
-		
-		linksFound.add(new Link("wisc.edu", "mit.edu"));
-		
+
+		Link l = new Link("wisc.edu", "mit.edu");
+		if (!linksFound.contains(l))
+			linksFound.add(l);
+
 		for (Link link : linksFound) {
 			System.out.println(link);
 		}
-		
+
 	}
-	
-	
+
 	public static void main(String[] args) {
 		new GenerateNodes("mit.edu", 100);
-		
+
 	}
 
 }
