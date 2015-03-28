@@ -131,7 +131,7 @@ public class Node {
 	public String toString(){
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append("Name: " + url + '\n' + "Connections: \t");
+		sb.append("Name: " + url + " (" + latitude + ", " + longitude + ")" + '\n' + "Connections: \t");
 		
 		
 		for (Node node : connectedTo) {

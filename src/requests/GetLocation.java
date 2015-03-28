@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -15,14 +14,14 @@ import util.Keys;
 
 public class GetLocation {
 	
+	private double longitude,latitude;
+	
 	private JSONArray results;
-	private LocationPair pair;
 	public GetLocation(String url) {
 		JSONObject json = getJson(url);
 		results = json.getJSONObject("DataTables").getJSONObject("DomainsInfo").getJSONArray("Data");
-		String longitude = results.getString("Longitude").toString();
-		String latitude = results.getString("Latitude").toString();
-		pair = new LocationPair(longitude, latitude)
+		longitude = Double.parseDouble(results.getJSONObject(0).getString("Longitude").toString());
+		latitude = Double.parseDouble(results.getJSONObject(0).getString("Latitude").toString());
 	}
 	
 	private static JSONObject getJson(String url) {
@@ -47,5 +46,14 @@ public class GetLocation {
 		}
 		return jsonobj;
 	}
+	
+	public double getLongitude() {
+		return longitude;
+	}
+
+	public double getLatitude() {
+		return latitude;
+	}
+
 
 }
