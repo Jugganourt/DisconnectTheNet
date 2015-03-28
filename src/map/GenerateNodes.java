@@ -23,6 +23,7 @@ public class GenerateNodes {
 		Node temp = new Node(url);	
 		urlToNode.put(url, temp);
 		
+		linksFound.add(new Link("wisc.edu", "mit.edu"));
 		
 		for (Link link : linksFound) {
 			System.out.println(link);
