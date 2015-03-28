@@ -9,6 +9,8 @@ import java.net.URL;
 
 import org.json.*;
 
+import util.Keys;
+
 public class JSONParsing {
 
 	private JSONObject json;
@@ -27,7 +29,7 @@ public class JSONParsing {
 	
 	public static JSONObject getJson(String url, String resultCount){
 		JSONObject jsonobj = new JSONObject();
-		String requestString = "http://api.majestic.com/api/json?app_api_key=A1491C07BAB12F365BA1E073C69200DF&"
+		String requestString = "http://api.majestic.com/api/json?app_api_key=" + Keys.KEY + "&"
 				+ "cmd=GetRefDomains&item0="+url+"&Count="+resultCount+"&datasource=fresh";	
 		try {
 			URL obj = new URL(requestString);
