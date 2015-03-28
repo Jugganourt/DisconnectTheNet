@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import org.json.*;
 
 import util.Keys;
@@ -16,11 +15,8 @@ public class JSONParsing {
 	private JSONObject json;
 	
 	public JSONParsing(String url, int resultCount){
-
 		json = getJson(url, "" + resultCount);
-		
 		JSONArray results = json.getJSONObject("DataTables").getJSONObject("Results").getJSONArray("Data");
-		
 		for(int i = 0; i < results.length(); i++){
 			System.out.println(results.getJSONObject(i).getString("Domain"));
 		}
