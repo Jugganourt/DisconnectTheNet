@@ -33,4 +33,9 @@ public class Link implements Comparable<Link>{
 	public int compareTo(Link o) {
 		return this.equals(o) ? 0 : 1;
 	}
+	
+	@Override
+	public int hashCode(){
+		return 1;
+	}
 }

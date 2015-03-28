@@ -24,8 +24,7 @@ public class GenerateNodes {
 		urlToNode.put(url, temp);
 
 		Link l = new Link("wisc.edu", "mit.edu");
-		if (!linksFound.contains(l))
-			linksFound.add(l);
+		linksFound.add(l);
 
 		for (Link link : linksFound) {
 			System.out.println(link);
