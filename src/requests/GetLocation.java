@@ -8,11 +8,22 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import util.Keys;
 
 public class GetLocation {
+	
+	private JSONArray results;
+	private LocationPair pair;
+	public GetLocation(String url) {
+		JSONObject json = getJson(url);
+		results = json.getJSONObject("DataTables").getJSONObject("DomainsInfo").getJSONArray("Data");
+		String longitude = results.getString("Longitude").toString();
+		String latitude = results.getString("Latitude").toString();
+		pair = new LocationPair(longitude, latitude)
+	}
 	
 	private static JSONObject getJson(String url) {
 		JSONObject jsonobj = new JSONObject();
