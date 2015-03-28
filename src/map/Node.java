@@ -36,6 +36,11 @@ public class Node {
 		this.trust = trust;
 	}
 	
+	public Node(String url){
+		this();
+		this.url = url;
+	}
+	
 	public Node(String url, int trust, ArrayList<String> topics){
 		this();
 		this.url = url;

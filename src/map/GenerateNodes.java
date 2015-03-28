@@ -1,25 +1,32 @@
 package map;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import requests.GetLinks;
 
 public class GenerateNodes {
 
-	ArrayList<Node> nodes;
+	Map<String, Node> urlToNode = new HashMap<String,Node>(); 
+	Set<Link> linksFound = new HashSet<Link>();
 	
 	public GenerateNodes(String url, int numResults){
+		
 		GetLinks start = new GetLinks(url, numResults);
 		
-		System.out.println(start.getField("Domain"));
-		
 		for (String site : start.getField("Domain")) {
-			System.out.println(new GetLinks(site, numResults).getField("Domain").toString());
+			linksFound.add(new Link(url, site));
 		}
 		
-		//nodes = new ArrayList<Node>();
+		Node temp = new Node(url);	
+		urlToNode.put(url, temp);
 		
-		//Node node = new N
+		
+		for (Link link : linksFound) {
+			System.out.println(link);
+		}
 		
 	}
 	

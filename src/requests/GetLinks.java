@@ -28,13 +28,13 @@ public class GetLinks {
 		}
 	}
 
-	private static JSONObject getJson(String url, String resultCount, HttpURLConnection con) {
+	private static JSONObject getJson(String url, String resultCount) {
 		JSONObject jsonobj = new JSONObject();
 		String requestString = "http://api.majestic.com/api/json?app_api_key=" + Keys.KEY + "&" + "cmd=GetRefDomains&item0=" + url + "&Count=" + resultCount
 				+ "&datasource=fresh";
 		try {
 			URL obj = new URL(requestString);
-			con = (HttpURLConnection) obj.openConnection();
+			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 			con.setRequestMethod("GET");
 			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 			String inputLine;
