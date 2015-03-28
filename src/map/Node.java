@@ -11,7 +11,7 @@ public class Node {
 	
 
 	//Connections
-	private ArrayList<Node> connectedTo;
+	private ArrayList<Connection> connectedTo;
 	private int numOfConnections;
 	private int status;
 
@@ -22,7 +22,7 @@ public class Node {
 	private double latitude, longitude;
 
 	public Node(){
-		this.connectedTo = new ArrayList<Node>();
+		this.connectedTo = new ArrayList<Connection>();
 		this.topics = new ArrayList<String>();
 		this.numOfConnections = 0;
 		this.status = STATUS_CONNECTED;
@@ -51,34 +51,32 @@ public class Node {
 	/**
 	 * returns number of steps it takes to reach node from current node, returns -1 if greater than 2
 	 */
-	public int stepsToConnect(Node node){
-		if (isConnectedTo(node)) {
-			return 1;
-		}else{
-			for (Node node2 : connectedTo) {
-				if (node2.isConnectedTo(node)) {
-					return 2;
-				}
-			}
-		}
-		return -1;
-	}
-	
+//	public int stepsToConnect(Node node){
+//		if (isConnectedTo(node)) {
+//			return 1;
+//		}else{
+//			for (Node node2 : connectedTo) {
+//				if (node2.isConnectedTo(node)) {
+//					return 2;
+//				}
+//			}
+//		}
+//		return -1;
+//	}
+//	
 	public boolean isConnectedTo(Node node){
 		return connectedTo.contains(node);
 	}
 	
-	public void addConnection(Node node){
-		if (!connectedTo.contains(node)) {
-			connectedTo.add(node);
-			node.addConnection(this);
+	public void addConnection(Connection connection){
+		if (!connectedTo.contains(connection)) {
+			connectedTo.add(connection);
 			numOfConnections++;
 		}
 	}
 	
-	public void removeConnection(Node node){
-		if (connectedTo.remove(node)) {
-			node.removeConnection(this);
+	public void removeConnection(Connection connection){
+		if (connectedTo.remove(connection)) {
 			numOfConnections--;
 		}
 		
@@ -129,16 +127,7 @@ public class Node {
 	}
 	
 	public String toString(){
-		StringBuilder sb = new StringBuilder();
-		
-		sb.append("Name: " + url + " (" + latitude + ", " + longitude + ")" + '\n' + "Connections: \t");
-		
-		
-		for (Node node : connectedTo) {
-			sb.append("\t\t" + node.getURL() + "\n");
-		}
-		
-		return sb.toString();
+		return "";
 	}
 	
 	public static void main(String[] args) {
@@ -146,8 +135,8 @@ public class Node {
 		Node b = new Node("URM", 10);
 		Node c = new Node("URN", 10);
 		
-		a.addConnection(b);
-		a.addConnection(c);
+		//a.addConnection(b);
+		//a.addConnection(c);
 		System.out.println(a.getNumberOfConnections());
 		
 	}

@@ -1,5 +1,6 @@
 package map;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
@@ -13,6 +14,7 @@ public class GenerateNodes {
 
 	private Map<String, Node> urlToNode = new TreeMap<String, Node>();
 	private Set<Link> linksFound = new HashSet<Link>();
+	private ArrayList<Connection> connections = new ArrayList<Connection>();
 
 	private final int upperChance = 100;
 	private final int linkChance = 15;
@@ -63,17 +65,15 @@ public class GenerateNodes {
 		for (Link link : linksFound) {
 			Node n1 = urlToNode.get(link.getFrom());
 			Node n2 = urlToNode.get(link.getTo());
-			n1.addConnection(n2);
+
+			Connection conn = new Connection(n1, n2);
+			if (!connections.contains(conn)) {
+				connections.add(conn);
+				n1.addConnection(conn);
+				n2.addConnection(conn);
+			}
 
 		}
-
-		System.out.println(urlToNode.get("mit.edu"));
-
-		// System.out.println("Number of links: " + linksFound.size());
-		// System.out.println("Number of nodes: " + urlToNode.size());
-		// for (Link link : linksFound) {
-		// System.out.println(link);
-		// }
 
 	}
 
@@ -81,6 +81,10 @@ public class GenerateNodes {
 		return urlToNode;
 	}
 
+	public ArrayList<Connection> getConnections(){
+		return connections;
+	}
+	
 	public static void main(String[] args) {
 		new GenerateNodes("mit.edu", 110);
 
