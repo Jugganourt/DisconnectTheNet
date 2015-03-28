@@ -19,8 +19,6 @@ public class GenerateNodes {
 
 		GetLinks start = new GetLinks(url, numResults);
 		
-		System.out.println(start.getField("Domain").size());
-		
 		Random r = new Random();
 
 		for (String site : start.getField("Domain")) {
@@ -32,22 +30,34 @@ public class GenerateNodes {
 		urlToNode.put(url, temp);
 
 		for (String site : start.getField("Domain")) {
-			System.out.println("Loop: " + site);
 			GetLinks siteLinks = new GetLinks(site, numResults);
 
 			for (String site2 : siteLinks.getField("Domain")) {
 				if (r.nextInt(upperChance) < linkChance)
 					linksFound.add(new Link(site, site2));
+				
+					urlToNode.put(site, new Node(site));
+					urlToNode.put(site2, new Node(site2));
 			}
 
-			temp = new Node(url);
-			urlToNode.put(url, temp);
+			
 		}
-
+		
 		for (Link link : linksFound) {
-			System.out.println(link);
+			Node n1 = urlToNode.get(link.getFrom());
+			Node n2 = urlToNode.get(link.getTo());
+			n1.addConnection(n2);
+			
 		}
 
+		System.out.println(urlToNode.get("mit.edu"));
+		
+//		System.out.println("Number of links: " + linksFound.size());
+//		System.out.println("Number of nodes: " + urlToNode.size());
+//		for (Link link : linksFound) {
+//			System.out.println(link);
+//		}
+		
 	}
 
 	public static void main(String[] args) {

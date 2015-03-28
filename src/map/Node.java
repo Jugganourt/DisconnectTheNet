@@ -17,10 +17,10 @@ public class Node {
 
 	private ArrayList<String> topics;
 	private String url;	
-	
 	private int trust;
-
 	
+	private double latitude, longitude;
+
 	public Node(){
 		this.connectedTo = new ArrayList<Node>();
 		this.topics = new ArrayList<String>();
@@ -110,6 +110,35 @@ public class Node {
 	
 	public int getNumberOfConnections(){
 		return this.numOfConnections;
+	}
+	
+	public double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
+	}
+
+	public double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
+	}
+	
+	public String toString(){
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("Name: " + url + '\n' + "Connections: \t");
+		
+		
+		for (Node node : connectedTo) {
+			sb.append("\t\t" + node.getURL() + "\n");
+		}
+		
+		return sb.toString();
 	}
 	
 	public static void main(String[] args) {
