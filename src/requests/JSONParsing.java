@@ -6,27 +6,32 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+
 import org.json.*;
 
 import util.Keys;
 
 public class JSONParsing {
 
-	private JSONObject json;
-	
-	public JSONParsing(String url, int resultCount){
-		json = getJson(url, "" + resultCount);
-		JSONArray results = json.getJSONObject("DataTables").getJSONObject("Results").getJSONArray("Data");
-		for(int i = 0; i < results.length(); i++){
-			System.out.println(results.getJSONObject(i).getString("Domain"));
+	private JSONArray results;
+
+	public JSONParsing(String url, int resultCount) {
+		JSONObject json = getJson(url, "" + resultCount);
+		results = json.getJSONObject("DataTables").getJSONObject("Results").getJSONArray("Data");
+
+		for (int i = 0; i < results.length(); i++) {
+			if (!results.getJSONObject(i).getString("Domain").contains(".edu")) {
+				results.remove(i);
+				i--;
+			}
 		}
-		
 	}
-	
-	public static JSONObject getJson(String url, String resultCount){
+
+	private static JSONObject getJson(String url, String resultCount) {
 		JSONObject jsonobj = new JSONObject();
-		String requestString = "http://api.majestic.com/api/json?app_api_key=" + Keys.KEY + "&"
-				+ "cmd=GetRefDomains&item0="+url+"&Count="+resultCount+"&datasource=fresh";	
+		String requestString = "http://api.majestic.com/api/json?app_api_key=" + Keys.KEY + "&" + "cmd=GetRefDomains&item0=" + url + "&Count=" + resultCount
+				+ "&datasource=fresh";
 		try {
 			URL obj = new URL(requestString);
 			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -38,7 +43,7 @@ public class JSONParsing {
 				response.append(inputLine);
 			}
 			in.close();
-			jsonobj = new JSONObject(response.toString()); 		
+			jsonobj = new JSONObject(response.toString());
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -46,10 +51,18 @@ public class JSONParsing {
 		}
 		return jsonobj;
 	}
-	
-	public static void main(String[] args){
-		JSONParsing j = new JSONParsing("google.com", 10);
+
+	public void printDomains() {
+		System.out.println("Number of domains: " + results.length());
+		
+		for (int i = 0; i < results.length(); i++) {
+			System.out.println(results.getJSONObject(i).getString("Domain"));
+		}
 	}
-	
-	
+
+	public static void main(String[] args) {
+		JSONParsing j = new JSONParsing("mit.edu", 100);
+		j.printDomains();
+	}
+
 }
