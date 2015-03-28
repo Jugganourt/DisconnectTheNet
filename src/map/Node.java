@@ -43,6 +43,9 @@ public class Node {
 		this.topics = topics;
 	}
 	
+	/**
+	 * returns number of steps it takes to reach node from current node, returns -1 if greater than 2
+	 */
 	public int stepsToConnect(Node node){
 		if (isConnectedTo(node)) {
 			return 1;
