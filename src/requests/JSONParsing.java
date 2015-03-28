@@ -1,14 +1,24 @@
 package requests;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class JSONParsing {
+	
 	private JSONObject jsonobj = new JSONObject();
 	
-	public JSONParsing(){
-
+	private JSONObject json;
+	
+	public JSONParsing(String url, int resultCount){	
 		
-		JSONObject o = new JSONObject();
+		json = getJson(url, "" + resultCount);
+		
+		JSONArray results = json.getJSONArray("Data");
+		
+		for(int i = 0; i < results.length(); i++){
+			System.out.println(results.getJSONObject(i).getString("Domain"));
+		}
+		
 	}
 	
 	public static JSONObject getJson(String url, String resultCount){
