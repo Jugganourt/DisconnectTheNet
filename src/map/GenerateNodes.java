@@ -14,9 +14,7 @@ public class GenerateNodes {
 	Set<Link> linksFound = new HashSet<Link>();
 
 	private final int upperChance = 100;
-	private final int linkChance = 20;
-	
-	
+	private final int linkChance = 15;
 	public GenerateNodes(String url, int numResults) {
 
 		GetLinks start = new GetLinks(url, numResults);
@@ -53,7 +51,7 @@ public class GenerateNodes {
 	}
 
 	public static void main(String[] args) {
-		new GenerateNodes("mit.edu", 200);
+		new GenerateNodes("mit.edu", 110);
 
 	}
 
