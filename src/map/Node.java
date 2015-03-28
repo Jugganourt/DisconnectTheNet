@@ -66,7 +66,17 @@ public class Node {
 	public void addConnection(Node node){
 		if (!connectedTo.contains(node)) {
 			connectedTo.add(node);
+			node.addConnection(this);
+			numOfConnections++;
 		}
+	}
+	
+	public void removeConnection(Node node){
+		if (connectedTo.remove(node)) {
+			node.removeConnection(this);
+			numOfConnections--;
+		}
+		
 	}
 	
 	@Override
@@ -91,5 +101,20 @@ public class Node {
 	
 	public int getStatus(){
 		return this.status;
+	}
+	
+	public int getNumberOfConnections(){
+		return this.numOfConnections;
+	}
+	
+	public static void main(String[] args) {
+		Node a = new Node("URL", 10);
+		Node b = new Node("URM", 10);
+		Node c = new Node("URN", 10);
+		
+		a.addConnection(b);
+		a.addConnection(c);
+		System.out.println(a.getNumberOfConnections());
+		
 	}
 }
