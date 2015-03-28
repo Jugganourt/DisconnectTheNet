@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 
 import org.json.*;
 
@@ -19,7 +18,6 @@ public class JSONParsing {
 	public JSONParsing(String url, int resultCount) {
 		JSONObject json = getJson(url, "" + resultCount);
 		results = json.getJSONObject("DataTables").getJSONObject("Results").getJSONArray("Data");
-
 		for (int i = 0; i < results.length(); i++) {
 			if (!results.getJSONObject(i).getString("Domain").contains(".edu")) {
 				results.remove(i);
@@ -52,9 +50,8 @@ public class JSONParsing {
 		return jsonobj;
 	}
 
-	public void printDomains() {
+	private void printDomains() {
 		System.out.println("Number of domains: " + results.length());
-		
 		for (int i = 0; i < results.length(); i++) {
 			System.out.println(results.getJSONObject(i).getString("Domain"));
 		}
