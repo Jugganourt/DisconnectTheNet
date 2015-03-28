@@ -24,13 +24,19 @@ public class Renderer {
 
 	private static Map<String, Integer> textureIdMap;
 	
+	public static void clearTextures(){
+		textureIdMap.forEach((filePath, texID) -> glDeleteTextures(texID));
+		textureIdMap.clear();
+	}
 	
 	public static void init(){
 		textureIdMap = new HashMap<String, Integer>();
+
 		glDepthMask(false);
 		glEnable(GL_BLEND);
 		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 		glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
 
 	}
@@ -58,6 +64,7 @@ public class Renderer {
 	}
 
 	public static void destroy() {
+		clearTextures();
 		Display.destroy();
 		System.exit(0);
 	}
@@ -138,10 +145,9 @@ public class Renderer {
 	}
 
 	public static void clear() {
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		Renderer.setColour(Colour.WHITE);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	// Clean the screen and the depth buffer
+		glLoadIdentity();	
 	}
-	
 	
 	public static int uploadTexture(BufferedImage image) {
 
@@ -197,7 +203,7 @@ public class Renderer {
 		BufferedImage image = null;
 		
 		try {
-			image = ImageIO.read(new File("resources/test.png"));
+			image = ImageIO.read(new File(filePath));
 		} catch (IOException e1) {
 			System.out.println("File not found");
 			e1.printStackTrace();
@@ -207,7 +213,8 @@ public class Renderer {
 		texID = uploadTexture(image);
 
 		textureIdMap.put(filePath, texID);
-
+		
+		System.out.println(texID);
 		return texID;
 	}
 }
