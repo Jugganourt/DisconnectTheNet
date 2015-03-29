@@ -17,7 +17,7 @@ public class GenerateNodes {
 	private ArrayList<Connection> connections = new ArrayList<Connection>();
 
 	private final int upperChance = 100;
-	private final int linkChance = 15;
+	private final int linkChance = 20;
 
 	public GenerateNodes(String url, int numResults) {
 

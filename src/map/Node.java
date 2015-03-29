@@ -20,6 +20,8 @@ public class Node {
 	private int trust;
 	
 	private double latitude, longitude;
+	private int x;
+	private int y;
 
 	public Node(){
 		this.connectedTo = new ArrayList<Connection>();
@@ -143,5 +145,23 @@ public class Node {
 		//a.addConnection(c);
 		System.out.println(a.getNumberOfConnections());
 		
+	}
+
+	public void setX(int x) {
+		this.x = x;
+		
+	}
+
+	public void setY(int y) {
+		this.y = y;
+		
+	}
+
+	public double getX() {
+		return this.x;
+	}
+	
+	public double getY() {
+		return this.y;
 	}
 }
