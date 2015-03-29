@@ -60,7 +60,7 @@ public class MainMenuState implements GameState {
 
 	@Override
 	public void render() {
-		Renderer.drawTextureRectangle(backgroundID, 0, 0, 800, 600);
+		Renderer.drawTextureRectangle(backgroundID, 0, 0, 800, 700);
 		// Renderer.drawTextureRectangle(testID, 0, 0, 200, 100);
 		play.render();
 		exit.render();

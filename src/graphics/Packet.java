@@ -40,8 +40,11 @@ public class Packet {
 			this.y = (int) conn.getNode(2).getY();
 		}
 		this.speed = Math.random() / 10;
-
-		System.out.println(speed);
+		if (this.speed < 0.01) {
+			this.speed = 0.01;
+		} else if(this.speed > 0.02){
+			this.speed = 0.02;
+		}
 	}
 
 	public void update() {

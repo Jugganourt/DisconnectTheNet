@@ -1,14 +1,16 @@
 package ui;
 
+import graphics.Colour;
+import graphics.Renderer;
+
 import java.awt.Font;
 import java.awt.image.BufferedImage;
 
-import org.lwjgl.input.Mouse;
-
-import graphics.Colour;
-import graphics.Renderer;
 import main.Main;
 import map.Node;
+
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
 
 public class NodeButton extends Button {
 
@@ -20,6 +22,9 @@ public class NodeButton extends Button {
 	private int focussedTexId;
 	private int dangerTexId;
 	
+	private int opacity = 255;
+	private boolean remove;
+	
 	private boolean danger;
 	
 	public NodeButton(String url, Node node, int x, int y) {
@@ -29,6 +34,7 @@ public class NodeButton extends Button {
 		this.dangerTexId = Renderer.uploadTexture("resources/dotO.png");
 		this.url = url.substring(0, url.length()-4);
 		this.node = node;
+		this.remove = false;
 		this.danger = false;
 		urlImage = Renderer.uploadTextAsTexture(this.url, new Font("Verdana", Font.PLAIN, 12));
 		urlID = Renderer.uploadTexture(urlImage);
@@ -45,21 +51,23 @@ public class NodeButton extends Button {
 	}
 	
 	public void render(){
+		
+		
 		if (focussed) {
-			Renderer.drawTextureRectangle(focussedTexId, x - width/2, y- height / 2, width, height);
+			Renderer.drawTextureRectangleOp(focussedTexId, x - width/2, y- height / 2, width, height, (float)(opacity / 255.0));
 			
 		} else if (isMouseOver()) {
-			Renderer.drawTextureRectangle(onMouseOverID, x - width/2, y- height / 2, width, height);
+			Renderer.drawTextureRectangleOp(onMouseOverID, x - width/2, y- height / 2, width, height, (float)(opacity / 255.0));
 		} else if(danger){
-			Renderer.drawTextureRectangle(dangerTexId, x- width/2 , y - height / 2 , width, height);
+			Renderer.drawTextureRectangleOp(dangerTexId, x- width/2 , y - height / 2 , width, height, (float)(opacity / 255.0));
 		} else {
-			Renderer.drawTextureRectangle(normalID, x- width/2 , y - height / 2 , width, height);
+			Renderer.drawTextureRectangleOp(normalID, x- width/2 , y - height / 2 , width, height, (float)(opacity / 255.0));
 		}
 		
 		Renderer.drawRectangle(x - urlImage.getWidth()/2, y + height/2,  urlImage.getTileWidth(), urlImage.getHeight(), new Colour(30, 30, 30));
 		Renderer.setColour(new Colour(255, 255, 255));
-		Renderer.drawTextureRectangle(urlID, x - urlImage.getWidth()/2, y + height/2, urlImage.getTileWidth(), urlImage.getHeight());
-		
+		Renderer.drawTextureRectangleOp(urlID, x - urlImage.getWidth()/2, y + height/2, urlImage.getTileWidth(), urlImage.getHeight(), (float)(opacity / 255.0));
+		GL11.glColor4f(1f, 1f, 1f, 1f);
 	}
 
 	public int getX() {
@@ -90,6 +98,22 @@ public class NodeButton extends Button {
 
 	public int getY() {
 	return this.y;
+	}
+
+	public void fade() {
+		if (Math.random() < 0.4) {
+			this.opacity = (int) (opacity - 0.05 * opacity);
+		}
+		
+		System.out.println("Opacity " + opacity);
+		if (opacity < 10) {
+			remove = true;
+		}
+		
+	}
+	
+	public boolean needsRemoving(){
+		return remove;
 	}
 
 }

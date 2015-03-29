@@ -61,6 +61,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 
 public class Renderer {
@@ -94,7 +95,7 @@ public class Renderer {
 	
 	public static void createWindow(){
 		try {
-			Display.setDisplayMode(new DisplayMode(800, 600));
+			Display.setDisplayMode(new DisplayMode(800, 700));
 			Display.setResizable(false);
 			Display.setTitle("Disconnect The Net");
 			Display.setVSyncEnabled(true);
@@ -139,6 +140,43 @@ public class Renderer {
 		int brX = x + width;
 		int brY = y + height;
 		
+		glBegin(GL_QUADS);
+
+		glTexCoord2f(0.0f, 0.0f);
+		glVertex3f(tlX, tlY, 0.0f);
+
+		glTexCoord2f(0.0f, 1.0f);
+		glVertex3f(blX, blY, 0.0f);
+
+		glTexCoord2f(1.0f, 1.0f);
+		glVertex3f(brX, brY, 0.0f);
+
+		glTexCoord2f(1.0f, 0.0f);
+		glVertex3f(trX, trY, 0.0f);
+
+		glEnd();
+		
+		
+		glDisable(GL_TEXTURE_2D);
+	}
+	
+	public static void drawTextureRectangleOp(int id, int x, int y, int width, int height, float op){
+		glEnable(GL_TEXTURE_2D);
+
+		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+		glBindTexture(GL_TEXTURE_2D, id);
+		
+		int tlX = x;
+		int tlY = y;
+		int trX = x + width;
+		int trY = y;
+		int blX = x;
+		int blY = y + height;
+		int brX = x + width;
+		int brY = y + height;
+		
+		
+		GL11.glColor4f(1f, 1f, 1f, op);
 		glBegin(GL_QUADS);
 
 		glTexCoord2f(0.0f, 0.0f);
@@ -316,6 +354,11 @@ public class Renderer {
 		
 		return image;
         
+	}
+
+	public static void deleteTexture(int texID) {
+		glDeleteTextures(texID);
+		
 	}
 	
 }
