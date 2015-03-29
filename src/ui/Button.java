@@ -8,14 +8,15 @@ import graphics.Renderer;
 
 public class Button {
 
-	private int onMouseOverID;
-	private int normalID;
-	private int x;
-	private int y;
-	private int width;
-	private int height;
+	protected int onMouseOverID;
+	protected int normalID;
+	protected int x;
+	protected int y;
+	protected int width;
+	protected int height;
 
 	private boolean clicked;
+	private boolean pressed;
 	private boolean visible;
 
 	public Button(int x, int y, int width, int height, String normalFilePath,
@@ -25,11 +26,11 @@ public class Button {
 		this.width = width;
 		this.height = height;
 
-		this.normalID = Renderer.uploadTexture("resources/test.png");
-		this.onMouseOverID = Renderer.uploadTexture("resources/test2.png");
+		this.normalID = Renderer.uploadTexture(normalFilePath);
+		this.onMouseOverID = Renderer.uploadTexture(mouseOverFilePath);
 
-		System.out.println(normalID);
-		System.out.println(onMouseOverID);
+		// System.out.println(normalID);
+		// System.out.println(onMouseOverID);
 
 	}
 
@@ -52,12 +53,29 @@ public class Button {
 		} else {
 			Renderer.drawTextureRectangle(normalID, x, y, width, height);
 		}
-		
-		
-		// System.out.println("mouseOver");
-		
 
-		// System.out.println("normal");
-		
-}
+	}
+	
+	public void input(){
+		if (clicked) {
+			clicked = false;
+		}
+
+		if (!isMouseOver()) {
+			pressed = false;
+			return;
+		}
+
+		if (Mouse.isButtonDown(0)) {
+			pressed = true;
+		} else if (pressed) {
+			// The mouse was released on the button
+			pressed = false;
+			clicked = true;
+		}
+	}
+	
+	public boolean isClicked(){
+		return this.clicked;
+	}
 }

@@ -23,23 +23,23 @@ public class Main {
 		
 	
 		
-		long timeP = 0;
+		long timeP = System.nanoTime();
 		long lagAcc = 0;
 		
 		while (!engine.isRequestingClose()) {
+			
 			long timeC = System.nanoTime();
 			long timeF = timeC - timeP;
 			timeP = timeC;
-
+			
 			lagAcc += timeF;
 
 			engine.input();
-
+			
 			while (lagAcc >= NPU) {
 				engine.update();
 				lagAcc -= NPU;
 			}
-			
 			engine.render();
 		}
 		Renderer.destroy();

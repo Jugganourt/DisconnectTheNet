@@ -1,11 +1,56 @@
 package graphics;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_BLEND;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_LINEAR;
+import static org.lwjgl.opengl.GL11.GL_MODELVIEW;
+import static org.lwjgl.opengl.GL11.GL_MODULATE;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_PROJECTION;
+import static org.lwjgl.opengl.GL11.GL_QUADS;
+import static org.lwjgl.opengl.GL11.GL_RGBA;
+import static org.lwjgl.opengl.GL11.GL_RGBA8;
+import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_ENV;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_ENV_MODE;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
+import static org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE;
+import static org.lwjgl.opengl.GL11.glBegin;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL11.glColor3d;
+import static org.lwjgl.opengl.GL11.glColor3f;
+import static org.lwjgl.opengl.GL11.glDeleteTextures;
+import static org.lwjgl.opengl.GL11.glDepthMask;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glEnd;
+import static org.lwjgl.opengl.GL11.glGenTextures;
+import static org.lwjgl.opengl.GL11.glLoadIdentity;
+import static org.lwjgl.opengl.GL11.glMatrixMode;
+import static org.lwjgl.opengl.GL11.glOrtho;
+import static org.lwjgl.opengl.GL11.glTexCoord2f;
+import static org.lwjgl.opengl.GL11.glTexEnvf;
+import static org.lwjgl.opengl.GL11.glTexEnvi;
+import static org.lwjgl.opengl.GL11.glTexImage2D;
+import static org.lwjgl.opengl.GL11.glTexParameteri;
+import static org.lwjgl.opengl.GL11.glVertex3f;
+import static org.lwjgl.opengl.GL11.glViewport;
 
+import java.awt.Canvas;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,8 +62,6 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL30;
-
-import sun.java2d.loops.DrawRect;
 
 public class Renderer {
 
@@ -115,6 +158,36 @@ public class Renderer {
 		
 		glDisable(GL_TEXTURE_2D);
 	}
+	
+	
+	public static void drawRectangle(int x, int y, int width, int height, Colour c){
+		
+		int tlX = x;
+		int tlY = y;
+		int trX = x + width;
+		int trY = y;
+		int blX = x;
+		int blY = y + height;
+		int brX = x + width;
+		int brY = y + height;
+		glColor3f((c.r) / 255f, (c.g) / 255f, (c.b) / 255f);
+		glBegin(GL_QUADS);
+
+		glTexCoord2f(0.0f, 0.0f);
+		glVertex3f(tlX, tlY, 0.0f);
+
+		glTexCoord2f(0.0f, 1.0f);
+		glVertex3f(blX, blY, 0.0f);
+		
+		glTexCoord2f(1.0f, 1.0f);
+		glVertex3f(brX, brY, 0.0f);
+
+		glTexCoord2f(1.0f, 0.0f);
+		glVertex3f(trX, trY, 0.0f);
+		
+		glEnd();
+	}
+
 	
 	public static void drawRectangle(int x, int y, int width, int height){
 		
@@ -214,7 +287,34 @@ public class Renderer {
 
 		textureIdMap.put(filePath, texID);
 		
-		System.out.println(texID);
+		
 		return texID;
 	}
+	
+	public static BufferedImage uploadTextAsTexture(String text, Font font){
+		
+		FontMetrics fm = new Canvas().getFontMetrics(font);
+
+		final int minimumWidth = 2;
+
+		int width = fm.stringWidth(text) + minimumWidth;
+		int height = fm.getHeight();
+
+		final double ALLOWANCE_FOR_CHARACTER_TAILS = 1.5;
+
+		BufferedImage image = new BufferedImage(width,
+				(int) (height * ALLOWANCE_FOR_CHARACTER_TAILS),
+				BufferedImage.TYPE_INT_ARGB);
+		Graphics2D graphics = image.createGraphics();
+		graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+				RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
+
+		graphics.setFont(font);
+		graphics.setColor(Color.WHITE);
+		graphics.drawString(text, 0, height);
+		
+		return image;
+        
+	}
+	
 }

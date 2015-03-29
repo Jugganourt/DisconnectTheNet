@@ -1,5 +1,6 @@
 package map;
 
+
 import java.util.ArrayList;
 
 public class Node {
@@ -20,6 +21,8 @@ public class Node {
 	private int trust;
 	
 	private double latitude, longitude;
+	private int x;
+	private int y;
 
 	public Node(){
 		this.connectedTo = new ArrayList<Connection>();
@@ -110,10 +113,6 @@ public class Node {
 		return this.status;
 	}
 	
-	public void setUrl(String url){
-		this.url = url;
-	}
-	
 	public int getNumberOfConnections(){
 		return this.numOfConnections;
 	}
@@ -134,6 +133,10 @@ public class Node {
 		this.longitude = longitude;
 	}
 	
+	public String toString(){
+		return "";
+	}
+	
 	public static void main(String[] args) {
 		Node a = new Node("URL", 10);
 		Node b = new Node("URM", 10);
@@ -142,6 +145,29 @@ public class Node {
 		//a.addConnection(b);
 		//a.addConnection(c);
 		System.out.println(a.getNumberOfConnections());
+		
+	}
+
+	public void setX(int x) {
+		this.x = x;
+		
+	}
+
+	public void setY(int y) {
+		this.y = y;
+		
+	}
+
+	public double getX() {
+		return this.x;
+	}
+	
+	public double getY() {
+		return this.y;
+	}
+
+	public void setUrl(String substring) {
+		this.url = substring;
 		
 	}
 }

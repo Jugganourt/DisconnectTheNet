@@ -3,37 +3,30 @@ package engine;
 import graphics.Renderer;
 import org.lwjgl.opengl.Display;
 
-import ui.Button;
 
 public class Engine {
-	private Button b;
 	private boolean requestClose;
-	int id = 0;
+	private GameStateManager gsm;
 	
 	public Engine(){
 		this.requestClose = false;
-		b = new Button(100, 100, 40, 40, "/resources/test.png","/resources/test2.png");
+		this.gsm = new GameStateManager();
+		
 	}
 	
 	
 	
 	public void input(){
-		
+		gsm.input();
 	}
 	
 	public void update(){
-		
+		gsm.update();
 	}
 	
 	public void render(){
 		Renderer.clear();
-
-		
-		//Renderer.drawTextureRectangle(id, Mouse.getX() - 10,  Main.WINDOW_HEIGHT - (Mouse.getY() + 10), 20, 20);
-		
-		
-		b.render();
-		 
+		gsm.render();
 		Display.update();
 	}
 	

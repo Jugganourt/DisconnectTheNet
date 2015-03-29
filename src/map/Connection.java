@@ -10,6 +10,14 @@ public class Connection {
 		this.n2 = n2;
 	}
 	
+	public Node getNode(int node){
+		if (node == 1) {
+			return n1;
+		} else {
+			return n2;
+		}
+	}
+	
 	public State getState(){
 		return state;
 	}
