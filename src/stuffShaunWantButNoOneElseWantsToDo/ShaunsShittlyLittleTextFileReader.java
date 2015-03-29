@@ -42,10 +42,10 @@ public class ShaunsShittlyLittleTextFileReader {
 				JSONArray nodeAgain = new JSONArray(jobj.get(current).toString());
 				for (int j = 0; j < nodeAgain.length(); j++) {
 					Node temp = new Node();
-					temp.setLatitude(Double.parseDouble(nodeAgain.get(0).toString().substring(5)));
-					temp.setLongitude((Double.parseDouble(nodeAgain.get(1).toString().substring(7))));
-					temp.setTrust(Integer.parseInt(nodeAgain.get(2).toString().substring(8)));
-					temp.setUrl(nodeAgain.get(2).toString().substring(6));
+					temp.setLatitude(Double.parseDouble(nodeAgain.get(0).toString().substring(4)));
+					temp.setLongitude((Double.parseDouble(nodeAgain.get(1).toString().substring(6))));
+					temp.setTrust(Integer.parseInt(nodeAgain.get(2).toString().substring(7)));
+					temp.setUrl(nodeAgain.get(3).toString().substring(5));
 					nodes.add(temp);
 					urlToNode.put(current, temp);
 				}
@@ -53,7 +53,7 @@ public class ShaunsShittlyLittleTextFileReader {
 			JSONArray con = new JSONArray(jobj.get("Connection List").toString());
 			ArrayList<Link> links = new ArrayList<Link>();
 			for (int i = 0; i < con.length(); i++) {
-				String from = con.get(i).toString().substring(9).substring(0, con.get(i).toString().substring(9).indexOf(":")-2);
+				String from = con.get(i).toString().substring(9).substring(0, con.get(i).toString().substring(9).indexOf(":")-1);
 				String to = con.get(i).toString().substring(9).substring(con.get(i).toString().substring(9).indexOf(":")+2);
 				Link temp = new Link(from, to);
 				links.add(temp);
@@ -70,8 +70,10 @@ public class ShaunsShittlyLittleTextFileReader {
 					}
 					if(nodes.get(i).getURL().equals(to)){
 						toNode = nodes.get(i);
+	
 					}
 				}
+				
 				Connection connect = new Connection(fromNode, toNode);
 				conectionsArray.add(connect);
 				fromNode.addConnection(connect);

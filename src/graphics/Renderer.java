@@ -186,6 +186,7 @@ public class Renderer {
 		glVertex3f(trX, trY, 0.0f);
 		
 		glEnd();
+		glColor3f(1.0f, 1.0f, 1.0f );
 	}
 
 	

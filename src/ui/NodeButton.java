@@ -18,14 +18,19 @@ public class NodeButton extends Button {
 	private BufferedImage urlImage;
 	private boolean focussed;
 	private int focussedTexId;
+	private int dangerTexId;
+	
+	private boolean danger;
 	
 	public NodeButton(String url, Node node, int x, int y) {
-		super(x, 600 - y, 20, 20, "resources/dot.png", "resources/dot.png");
+		super(x, 600 - y, 25, 25, "resources/dot.png", "resources/dot.png");
 		this.focussed = false;
 		this.focussedTexId = Renderer.uploadTexture("resources/dotR.png");
-		this.url = url;
+		this.dangerTexId = Renderer.uploadTexture("resources/dotO.png");
+		this.url = url.substring(0, url.length()-4);
 		this.node = node;
-		urlImage = Renderer.uploadTextAsTexture(url, new Font("Verdana", Font.PLAIN, 8));
+		this.danger = false;
+		urlImage = Renderer.uploadTextAsTexture(this.url, new Font("Verdana", Font.PLAIN, 12));
 		urlID = Renderer.uploadTexture(urlImage);
 		
 	}
@@ -42,10 +47,11 @@ public class NodeButton extends Button {
 	public void render(){
 		if (focussed) {
 			Renderer.drawTextureRectangle(focussedTexId, x - width/2, y- height / 2, width, height);
-			return;
-		}
-		if (isMouseOver()) {
+			
+		} else if (isMouseOver()) {
 			Renderer.drawTextureRectangle(onMouseOverID, x - width/2, y- height / 2, width, height);
+		} else if(danger){
+			Renderer.drawTextureRectangle(dangerTexId, x- width/2 , y - height / 2 , width, height);
 		} else {
 			Renderer.drawTextureRectangle(normalID, x- width/2 , y - height / 2 , width, height);
 		}
@@ -64,6 +70,10 @@ public class NodeButton extends Button {
 		this.x = i;
 		
 	}
+	
+	public void setDanger(boolean b){
+		this.danger = b;
+	}
 
 	public Node getNode() {
 		return node;
@@ -71,6 +81,15 @@ public class NodeButton extends Button {
 	
 	public void setFocussed(boolean b){
 		this.focussed = b;
+	}
+
+	public void setY(int i) {
+		this.y = i;
+		
+	}
+
+	public int getY() {
+	return this.y;
 	}
 
 }

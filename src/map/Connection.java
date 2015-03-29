@@ -8,6 +8,7 @@ public class Connection {
 	public Connection(Node n1, Node n2){
 		this.n1 = n1;
 		this.n2 = n2;
+		setState(State.Active);
 	}
 	
 	public Node getNode(int node){

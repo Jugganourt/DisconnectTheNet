@@ -2,29 +2,40 @@ package ui;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 
 import map.Connection;
 import map.GenerateNodes;
 import map.Node;
+import map.Connection.State;
 
 import org.lwjgl.opengl.GL11;
 
+import stuffShaunWantButNoOneElseWantsToDo.ShaunsShittlyLittleTextFileReader;
 import engine.GameState;
 import engine.GameStateManager;
+import graphics.Packet;
 import graphics.Renderer;
 
 public class PlayState implements GameState {
 
 	private int lives = 3;
 	
+	private int restoreTick = 120;
+	
 	private GameStateManager gsm;
 	private int backgroundID;
 	private ArrayList<NodeButton> nodeButtons;
+	private ArrayList<Packet> packets;
 	ArrayList<Connection> conns;
 	private Node mouseOver;
 	private Node focussed;
+	
+	private int pTick = 0;
+	
+	
 
 	
 	public PlayState(GameStateManager gsm) {
@@ -33,8 +44,9 @@ public class PlayState implements GameState {
 		mouseOver = null;
 		focussed = null;
 		nodeButtons = new ArrayList<NodeButton>();
+		this.packets = new ArrayList<Packet>();
 		
-		GenerateNodes genNodes = new GenerateNodes("mit.edu",100);
+		GenerateNodes genNodes = ShaunsShittlyLittleTextFileReader.getNodes();
 		Map<String, Node> map = genNodes.getUrlToNode();
 		
 		double minX = Integer.MAX_VALUE, minY = Integer.MAX_VALUE, maxX = Integer.MIN_VALUE, maxY = Integer.MIN_VALUE;
@@ -50,7 +62,6 @@ public class PlayState implements GameState {
 			
 			
 			if (n.getURL().equals("upenn.edu")) {
-				System.out.println("UPENN");
 				n.setLatitude(39);
 				n.setLongitude(-75);
 			}
@@ -138,23 +149,39 @@ public class PlayState implements GameState {
 			n.setX(x);
 			n.setY(600 - y);
 			
-			System.out.println(n.getURL() + "    " + x + "        " + y);
+			System.out.println(n.getURL() + "    " + n.getTrust());
 			nodeButtons.add(new NodeButton(key, map.get(key), x, y));
 			
 			for (int i = 0; i < nodeButtons.size(); i++) {
 				for (int j = i + 1; j < nodeButtons.size(); j++) {
-					if (Math.abs(nodeButtons.get(i).getX() - nodeButtons.get(j).getX()) < 30) {
+					if (Math.abs(nodeButtons.get(i).getX() - nodeButtons.get(j).getX()) < 40) {
 						int cx = nodeButtons.get(j).getX() +  (nodeButtons.get(i).getX() - nodeButtons.get(j).getX())/2;
 						if (nodeButtons.get(j).getX() < nodeButtons.get(i).getX()) {
-							nodeButtons.get(i).setX(cx + 15); 
-							nodeButtons.get(i).getNode().setX(cx + 15);
-							nodeButtons.get(j).setX(cx - 15);
-							nodeButtons.get(j).getNode().setX(cx - 15);
+							nodeButtons.get(i).setX(cx + 20); 
+							nodeButtons.get(i).getNode().setX(cx + 20);
+							nodeButtons.get(j).setX(cx - 20);
+							nodeButtons.get(j).getNode().setX(cx - 20);
 						} else {
-							nodeButtons.get(i).setX(cx - 15); 
-							nodeButtons.get(i).getNode().setX(cx - 15);
-							nodeButtons.get(j).setX(cx + 15);
-							nodeButtons.get(j).getNode().setX(cx + 15);
+							nodeButtons.get(i).setX(cx - 20); 
+							nodeButtons.get(i).getNode().setX(cx - 20);
+							nodeButtons.get(j).setX(cx + 20);
+							nodeButtons.get(j).getNode().setX(cx + 20);
+						}
+					}
+					
+					
+					if (Math.abs(nodeButtons.get(i).getY() - nodeButtons.get(j).getY()) < 40) {
+						int cx = nodeButtons.get(j).getY() +  (nodeButtons.get(i).getY() - nodeButtons.get(j).getY())/2;
+						if (nodeButtons.get(j).getY() < nodeButtons.get(i).getY()) {
+							nodeButtons.get(i).setY(cx + 20); 
+							nodeButtons.get(i).getNode().setY(cx + 20);
+							nodeButtons.get(j).setY(cx - 20);
+							nodeButtons.get(j).getNode().setY(cx - 20);
+						} else {
+							nodeButtons.get(i).setY(cx - 20); 
+							nodeButtons.get(i).getNode().setY(cx - 20);
+							nodeButtons.get(j).setY(cx + 20);
+							nodeButtons.get(j).getNode().setY(cx + 20);
 						}
 					}
 				}
@@ -162,11 +189,9 @@ public class PlayState implements GameState {
 		}
 		
 		conns = genNodes.getConnections();
+	
 		
-		for (Connection c: conns) {
-			System.out.println(c);
-		}
-		
+
 		Random ran = new Random();
 		int i = ran.nextInt(nodeButtons.size());
 		focussed = nodeButtons.get(i).getNode();
@@ -184,10 +209,11 @@ public class PlayState implements GameState {
 				if (focussed.isConnectedTo(n.getNode())) {
 					System.out.println("Connected to focussed");
 					for (int i = conns.size()-1; i >= 0; i--) {
+						if (conns.get(i).getState() == Connection.State.Unactive) {
+							continue;
+						}
 						if (conns.get(i).getNode(1).equals(focussed) && conns.get(i).getNode(2).equals(n.getNode()) || conns.get(i).getNode(2).equals(focussed) && conns.get(i).getNode(1).equals(n.getNode())) {
-							conns.get(i).getNode(1).removeConnection(conns.get(i).getNode(2));
-							conns.get(i).getNode(2).removeConnection(conns.get(i).getNode(1));
-							conns.remove(i);
+							conns.get(i).setState(Connection.State.Unactive);
 						}
 					}
 					focussed = n.getNode();
@@ -208,10 +234,39 @@ public class PlayState implements GameState {
 
 	@Override
 	public void update() {
+		System.out.println(restoreTick);
+		if (restoreTick == 0) {
+			for (Connection connection : conns) {
+				if (connection.getState() == State.Unactive) {
+					
+					double chance = (connection.getNode(1).getTrust() * connection.getNode(2).getTrust())/1000000.0;
+					if (chance > Math.random()) {
+						System.out.println("Restore");
+						connection.setState(State.Active);
+						restoreTick = 120;
+						break;
+					}
+				}
+			}
+		} else {
+			restoreTick--;
+		}
+		
+		
+		
+		
+		
+		
 		for (int i = nodeButtons.size()-1; i >= 0; i--) {
 			if (nodeButtons.get(i).getNode().getNumberOfConnections() == 0) {
 				Node n = nodeButtons.get(i).getNode();
 				nodeButtons.remove(i);
+				for (int j = conns.size()-1; j >= 0; j--) {
+					if (conns.get(j).getNode(1).equals(n) || conns.get(j).getNode(2).equals(n)) {
+						conns.remove(j);
+					}
+				}
+				
 				if (nodeButtons.isEmpty()) {
 					if (lives > 0) {
 						System.out.println("You Win");
@@ -234,6 +289,27 @@ public class PlayState implements GameState {
 				
 			}
 		}
+		
+		for (NodeButton b : nodeButtons) {
+			if (b.getNode().isConnectedTo(focussed)) {
+				b.setDanger(true);
+			}else {
+				b.setDanger(false);
+			}
+		}
+		
+		
+		pTick++;
+		
+		if (pTick % 1 == 0) {
+			Random ran = new Random();
+			packets.add(new Packet(conns.get(ran.nextInt(conns.size()))));
+		}
+		
+		for (Packet p : packets) {
+			p.update();
+		}
+
 
 	}
 
@@ -242,6 +318,10 @@ public class PlayState implements GameState {
 		Renderer.drawTextureRectangle(backgroundID, 0, 0, 800, 600);
 		
 		for (Connection c : conns) {
+			if (c.getState() == Connection.State.Unactive) {
+				continue;
+			}
+			
 			GL11.glEnable(GL11.GL_BLEND);
 			GL11.glEnable(GL11.GL_LINE_SMOOTH);
 			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -250,7 +330,7 @@ public class PlayState implements GameState {
 			} else if(c.getNode(1).equals(focussed) || c.getNode(2).equals(focussed)) {
 				 GL11.glColor3f(1.0f, 0.0f, 1.0f);
 			} else {
-				GL11.glColor3f(0.0f, 1.0f, 0.2f);
+				GL11.glColor4f(0.0f, 1.0f, 0.2f, 0.65f);
 			}
 		   
 		    GL11.glLineWidth(2.0f);
@@ -262,9 +342,20 @@ public class PlayState implements GameState {
 		    GL11.glColor3f(1.0f, 1.0f, 1.0f);
 		}
 		
+		for (int i = packets.size() -1; i >=0; i--) {
+			if (packets.get(i).needsRemove()) {
+				packets.remove(i);
+			} else {
+				packets.get(i).render();
+			}
+		}
+		
+		
 		for (NodeButton nodeButton : nodeButtons) {
 			nodeButton.render();
 		}
+		
+		
 	}
 
 	@Override

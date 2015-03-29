@@ -119,7 +119,15 @@ public class Node {
 	}
 	
 	public int getNumberOfConnections(){
-		return this.numOfConnections;
+		int res = 0;
+		
+		for (Connection connection : connectedTo) {
+			if (connection.getState() == Connection.State.Active) {
+				res++;
+			}
+		}
+
+		return res;
 	}
 	
 	public double getLatitude() {
@@ -136,10 +144,6 @@ public class Node {
 
 	public void setLongitude(double longitude) {
 		this.longitude = longitude;
-	}
-	
-	public String toString(){
-		return "";
 	}
 	
 	public static void main(String[] args) {
