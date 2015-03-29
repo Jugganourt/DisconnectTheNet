@@ -19,6 +19,10 @@ public class GenerateNodes {
 	private final int upperChance = 100;
 	private final int linkChance = 15;
 
+	public GenerateNodes(){
+		
+	}
+	
 	public GenerateNodes(String url, int numResults) {
 
 		GetLinks start = new GetLinks(url, numResults);
@@ -86,6 +90,14 @@ public class GenerateNodes {
 
 	public ArrayList<Connection> getConnections(){
 		return connections;
+	}
+	
+	public void setConnections(ArrayList<Connection> connections){
+		this.connections = connections;
+	}
+	
+	public void setUrlToNode(Map<String, Node> urlToNode){
+		this.urlToNode = urlToNode;
 	}
 	
 	public static void main(String[] args) {

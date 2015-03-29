@@ -110,6 +110,10 @@ public class Node {
 		return this.status;
 	}
 	
+	public void setUrl(String url){
+		this.url = url;
+	}
+	
 	public int getNumberOfConnections(){
 		return this.numOfConnections;
 	}
@@ -128,10 +132,6 @@ public class Node {
 
 	public void setLongitude(double longitude) {
 		this.longitude = longitude;
-	}
-	
-	public String toString(){
-		return "";
 	}
 	
 	public static void main(String[] args) {
