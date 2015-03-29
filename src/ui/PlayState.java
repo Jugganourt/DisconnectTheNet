@@ -3,6 +3,7 @@ package ui;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Random;
 
 import map.Connection;
 import map.GenerateNodes;
@@ -16,16 +17,20 @@ import graphics.Renderer;
 
 public class PlayState implements GameState {
 
+	private int lives = 3;
+	
 	private GameStateManager gsm;
 	private int backgroundID;
 	private ArrayList<NodeButton> nodeButtons;
 	ArrayList<Connection> conns;
+	private Node mouseOver;
 	private Node focussed;
 
 	
 	public PlayState(GameStateManager gsm) {
 		this.gsm = gsm;
 		this.backgroundID = Renderer.uploadTexture("resources/playBackground.png");
+		mouseOver = null;
 		focussed = null;
 		nodeButtons = new ArrayList<NodeButton>();
 		
@@ -41,6 +46,9 @@ public class PlayState implements GameState {
 		
 		for (String key : map.keySet()) {
 			Node n = map.get(key);
+			
+			
+			
 			if (n.getURL().equals("upenn.edu")) {
 				System.out.println("UPENN");
 				n.setLatitude(39);
@@ -87,7 +95,9 @@ public class PlayState implements GameState {
 			Node n = map.get(key);
 			int x;
 			int y;
-			
+			if (n.getNumberOfConnections() == 0) {
+				continue;
+			}
 			
 			if (n.getLongitude() < xq1) {
 				gapX = xq1 - minX;
@@ -157,25 +167,73 @@ public class PlayState implements GameState {
 			System.out.println(c);
 		}
 		
-		
-		
+		Random ran = new Random();
+		int i = ran.nextInt(nodeButtons.size());
+		focussed = nodeButtons.get(i).getNode();
+		nodeButtons.get(i).setFocussed(true);
 		
 	}
 	
 	@Override
 	public void input() {
-		focussed = null;
+		mouseOver = null;
 		for (NodeButton n : nodeButtons) {
-			if (n.isMouseOver()) {
-				focussed = n.getNode();
+			n.input();
+			
+			if (n.isClicked()) {
+				if (focussed.isConnectedTo(n.getNode())) {
+					System.out.println("Connected to focussed");
+					for (int i = conns.size()-1; i >= 0; i--) {
+						if (conns.get(i).getNode(1).equals(focussed) && conns.get(i).getNode(2).equals(n.getNode()) || conns.get(i).getNode(2).equals(focussed) && conns.get(i).getNode(1).equals(n.getNode())) {
+							conns.get(i).getNode(1).removeConnection(conns.get(i).getNode(2));
+							conns.get(i).getNode(2).removeConnection(conns.get(i).getNode(1));
+							conns.remove(i);
+						}
+					}
+					focussed = n.getNode();
+					n.setFocussed(true);
+				}
+				
 			}
+			if (n.isMouseOver()) {
+				mouseOver = n.getNode();
+			}
+			if (!n.getNode().equals(focussed)) {
+				n.setFocussed(false);
+			}
+			
 		}
 
 	}
 
 	@Override
 	public void update() {
-
+		for (int i = nodeButtons.size()-1; i >= 0; i--) {
+			if (nodeButtons.get(i).getNode().getNumberOfConnections() == 0) {
+				Node n = nodeButtons.get(i).getNode();
+				nodeButtons.remove(i);
+				if (nodeButtons.isEmpty()) {
+					if (lives > 0) {
+						System.out.println("You Win");
+					}
+					System.exit(0);
+				}
+				if (n.equals(focussed)) {
+					lives--;
+					System.out.println("You have " + lives + " remaining.");
+					if (lives == 0) {
+						System.out.println("You Lose");
+						System.exit(0);
+					}
+					Random ran = new Random();
+					int x = ran.nextInt(nodeButtons.size());
+					focussed = nodeButtons.get(x).getNode();
+					nodeButtons.get(x).setFocussed(true);
+				}
+				
+				
+			}
+		}
 
 	}
 
@@ -187,10 +245,12 @@ public class PlayState implements GameState {
 			GL11.glEnable(GL11.GL_BLEND);
 			GL11.glEnable(GL11.GL_LINE_SMOOTH);
 			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-			if (c.getNode(1).equals(focussed) || c.getNode(2).equals(focussed)) {
+			if (c.getNode(1).equals(mouseOver) || c.getNode(2).equals(mouseOver)) {
 				 GL11.glColor3f(1.0f, 0.0f, 0.2f);
+			} else if(c.getNode(1).equals(focussed) || c.getNode(2).equals(focussed)) {
+				 GL11.glColor3f(1.0f, 0.0f, 1.0f);
 			} else {
-				 GL11.glColor3f(0.0f, 1.0f, 0.2f);
+				GL11.glColor3f(0.0f, 1.0f, 0.2f);
 			}
 		   
 		    GL11.glLineWidth(2.0f);

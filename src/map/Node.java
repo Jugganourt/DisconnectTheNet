@@ -68,7 +68,12 @@ public class Node {
 //	}
 //	
 	public boolean isConnectedTo(Node node){
-		return connectedTo.contains(node);
+		for (Connection connection : connectedTo) {
+			if (connection.getNode(1).equals(node) || connection.getNode(2).equals(node)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public void addConnection(Connection connection){
@@ -170,4 +175,15 @@ public class Node {
 		this.url = substring;
 		
 	}
+
+	public void removeConnection(Node node) {
+		for (int i = connectedTo.size()-1; i >= 0; i--) {
+			if (connectedTo.get(i).getNode(1).equals(node) || connectedTo.get(i).getNode(2).equals(node) ) {
+				connectedTo.remove(i);
+				numOfConnections--;
+			}
+		}
+		
+	}
+
 }

@@ -16,10 +16,13 @@ public class NodeButton extends Button {
 	private Node node;
 	private int urlID;
 	private BufferedImage urlImage;
+	private boolean focussed;
+	private int focussedTexId;
 	
 	public NodeButton(String url, Node node, int x, int y) {
 		super(x, 600 - y, 20, 20, "resources/dot.png", "resources/dot.png");
-		
+		this.focussed = false;
+		this.focussedTexId = Renderer.uploadTexture("resources/dotR.png");
 		this.url = url;
 		this.node = node;
 		urlImage = Renderer.uploadTextAsTexture(url, new Font("Verdana", Font.PLAIN, 8));
@@ -37,6 +40,10 @@ public class NodeButton extends Button {
 	}
 	
 	public void render(){
+		if (focussed) {
+			Renderer.drawTextureRectangle(focussedTexId, x - width/2, y- height / 2, width, height);
+			return;
+		}
 		if (isMouseOver()) {
 			Renderer.drawTextureRectangle(onMouseOverID, x - width/2, y- height / 2, width, height);
 		} else {
@@ -60,6 +67,10 @@ public class NodeButton extends Button {
 
 	public Node getNode() {
 		return node;
+	}
+	
+	public void setFocussed(boolean b){
+		this.focussed = b;
 	}
 
 }
