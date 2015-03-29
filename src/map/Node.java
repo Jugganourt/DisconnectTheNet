@@ -3,6 +3,8 @@ package map;
 
 import java.util.ArrayList;
 
+import map.Connection.State;
+
 public class Node {
 	
 	//status constants
@@ -69,6 +71,9 @@ public class Node {
 //	
 	public boolean isConnectedTo(Node node){
 		for (Connection connection : connectedTo) {
+			if (connection.getState() == State.Unactive) {
+				continue;
+			}
 			if (connection.getNode(1).equals(node) || connection.getNode(2).equals(node)) {
 				return true;
 			}

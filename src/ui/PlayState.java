@@ -304,6 +304,7 @@ public class PlayState implements GameState {
 		if (pTick % 1 == 0) {
 			Random ran = new Random();
 			packets.add(new Packet(conns.get(ran.nextInt(conns.size()))));
+			
 		}
 		
 		for (Packet p : packets) {
