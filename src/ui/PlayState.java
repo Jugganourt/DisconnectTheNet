@@ -42,6 +42,9 @@ public class PlayState implements GameState {
 	private Node mouseOver;
 	private Node focussed;
 	
+	private boolean hasTeleport;
+	private int teleportCount = 0;
+	
 	private boolean gameRunning = false;
 	
 	private int pTick = 0;
@@ -52,6 +55,7 @@ public class PlayState implements GameState {
 	public PlayState(GameStateManager gsm) {
 		this.gsm = gsm;
 		this.incOp = false;
+		this.hasTeleport = false;
 		this.fading = new ArrayList<NodeButton>();
 		this.backgroundID = Renderer.uploadTexture("resources/playBackground.png");
 		this.overlayID = Renderer.uploadTexture("resources/overlay.png");
@@ -242,7 +246,22 @@ public class PlayState implements GameState {
 						}
 						focussed = n.getNode();
 						n.setFocussed(true);
-					}
+					} else if (hasTeleport) {
+						hasTeleport = false;
+						System.out.println("Connected to focussed");
+						for (int i = conns.size()-1; i >= 0; i--) {
+							if (conns.get(i).getState() == Connection.State.Unactive) {
+								continue;
+							}
+							if (conns.get(i).getNode(1).equals(focussed) && conns.get(i).getNode(2).equals(n.getNode()) || conns.get(i).getNode(2).equals(focussed) && conns.get(i).getNode(1).equals(n.getNode())) {
+								conns.get(i).setState(Connection.State.Unactive);
+							}
+						}
+						focussed = n.getNode();
+						n.setFocussed(true);
+					} 
+						
+					
 					
 				}
 				if (n.isMouseOver()) {
@@ -317,16 +336,14 @@ public class PlayState implements GameState {
 					
 					if (nodeButtons.isEmpty()) {
 						if (lives > 0) {
-							System.out.println("You Win");
+							gsm.pushState(new WinState(gsm,lives));
 						}
-						System.exit(0);
 					}
 					if (n.equals(focussed)) {
 						lives--;
 						System.out.println("You have " + lives + " remaining.");
 						if (lives == 0) {
-							System.out.println("You Lose");
-							System.exit(0);
+							gsm.pushState(new LoseState(gsm, lives));
 						}
 						Random ran = new Random();
 						int x = ran.nextInt(nodeButtons.size());
@@ -359,8 +376,12 @@ public class PlayState implements GameState {
 			
 			pTick++;
 			
-			if (pTick % 1 == 0) {
+			if (pTick % 4 == 0) {
+				
 				Random ran = new Random();
+				if (ran.nextInt(125) == 0) {
+					packets.add(new Packet(conns.get(ran.nextInt(conns.size())),true));
+				}
 				packets.add(new Packet(conns.get(ran.nextInt(conns.size()))));
 				
 			}
@@ -422,6 +443,10 @@ public class PlayState implements GameState {
 		
 		for (int i = packets.size() -1; i >=0; i--) {
 			if (packets.get(i).needsRemove()) {
+				if (packets.get(i).isSuper()) {
+					teleportCount++;
+					hasTeleport = true;
+				}
 				packets.remove(i);
 			} else {
 				packets.get(i).render();
@@ -449,6 +474,12 @@ public class PlayState implements GameState {
 		int ndrId = Renderer.uploadTexture(ndrs);
 		Renderer.drawTextureRectangle(ndrId, 50, 655, ndrs.getWidth(), ndrs.getHeight());
 		Renderer.deleteTexture(ndrId);
+		
+		BufferedImage tps = Renderer.uploadTextAsTexture("Teleport Available: " + hasTeleport, new Font("Verdana", Font.BOLD, 14));
+		int tpId = Renderer.uploadTexture(tps);
+		Renderer.drawTextureRectangle(tpId, 300, 615, tps.getWidth(), tps.getHeight());
+		Renderer.deleteTexture(tpId);
+		
 		
 		for (NodeButton b : fading) {
 			b.render();

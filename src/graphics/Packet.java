@@ -23,6 +23,8 @@ public class Packet {
 	private boolean inc;
 
 	private boolean onCourse;
+	
+	private boolean superPacket;
 
 	public Packet(Connection conn) {
 		this.conn = conn;
@@ -45,6 +47,12 @@ public class Packet {
 		} else if(this.speed > 0.02){
 			this.speed = 0.02;
 		}
+	}
+	
+	public Packet(Connection conn, boolean superPacket){
+		this(conn);
+		this.superPacket = superPacket;
+		this.speed = 0.004;
 	}
 
 	public void update() {
@@ -86,12 +94,22 @@ public class Packet {
 	}
 
 	public void render() {
-		Renderer.drawRectangle(x - size / 2, y - size / 2, size, size,
-				Colour.RED);
+		if (isSuper()) {
+			Renderer.drawRectangle(x - 4, y - 4, 8, 8,
+					Colour.RED);
+		} else {
+			Renderer.drawRectangle(x - size / 2, y - size / 2, size, size,
+					Colour.GREEN);
+		}
+		
 	}
 
 	public boolean needsRemove() {
 		return this.remove;
+	}
+	
+	public boolean isSuper(){
+		return this.superPacket;
 	}
 
 }
