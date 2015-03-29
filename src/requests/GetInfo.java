@@ -23,7 +23,7 @@ public class GetInfo {
 		results = json.getJSONObject("DataTables").getJSONObject("DomainsInfo").getJSONArray("Data");
 		longitude = Double.parseDouble(results.getJSONObject(0).getString("Longitude").toString());
 		latitude = Double.parseDouble(results.getJSONObject(0).getString("Latitude").toString());
-		trust = Integer.parseInt(results.getJSONObject(0).getString("TrustFlow").toString());
+		trust = results.getJSONObject(0).getInt("TrustFlow");
 	}
 	
 	private static JSONObject getJson(String url) {

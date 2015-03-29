@@ -54,6 +54,7 @@ public class GenerateNodes {
 				}
 				if (!urlToNode.containsKey(site2)) {
 					Node node = new Node(site2);
+					loc = new GetInfo(site2);
 					node.setLatitude(loc.getLatitude());
 					node.setLongitude(loc.getLongitude());
 					node.setTrust(loc.getTrust());
