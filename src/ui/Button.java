@@ -27,6 +27,7 @@ public class Button {
 		this.height = height;
 
 		this.normalID = Renderer.uploadTexture(normalFilePath);
+		
 		this.onMouseOverID = Renderer.uploadTexture(mouseOverFilePath);
 
 		// System.out.println(normalID);

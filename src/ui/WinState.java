@@ -13,8 +13,7 @@ public class WinState implements GameState {
 
 	private int backgroundID;
 	private int testID;
-	private int testW;
-	private int testH;
+
 	
 	private boolean mouseDown;
 
@@ -26,15 +25,13 @@ public class WinState implements GameState {
 	private int tick = 0;
 
 	private ArrayList<Button> buttons;
+	private Button text;
 
 	public WinState(GameStateManager gsm, int lives) {
 		this.gsm = gsm;
 		buttons = new ArrayList<Button>();
 		backgroundID = Renderer.uploadTexture("resources/mainBackground.png");
-		BufferedImage tps = Renderer.uploadTextAsTexture("You Won! With " + lives + " lives remaining.", new Font("Verdana", Font.BOLD, 28));
-		int testID = Renderer.uploadTexture(tps);
-		testW = tps.getWidth();
-		testH = tps.getHeight();
+		text = new Button(300, 200, 200, 100, "resources/win.png", "resources/win.png");
 		
 		
 		
@@ -64,8 +61,7 @@ public class WinState implements GameState {
 	@Override
 	public void render() {
 		Renderer.drawTextureRectangle(backgroundID, 0, 0, 800, 700);
-		Renderer.drawTextureRectangle(testID, 400 - testW/2, 200, testW, testH);
-		
+		text.render();
 		exit.render();
 	}
 

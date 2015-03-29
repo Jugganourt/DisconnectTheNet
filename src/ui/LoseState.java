@@ -24,6 +24,7 @@ public class LoseState implements GameState {
 	private int tick = 0;
 
 	private ArrayList<Button> buttons;
+	private Button text;
 
 	public LoseState(GameStateManager gsm, int lives) {
 		this.gsm = gsm;
@@ -39,6 +40,8 @@ public class LoseState implements GameState {
 		
 		exit = new Button(300, 325, 200, 100, "resources/quit.png",
 				"resources/quitMO.png");
+		text = new Button(300, 200, 200, 100, "resources/lose.png",
+				"resources/lose.png");
 	}
 
 	@Override
@@ -60,8 +63,9 @@ public class LoseState implements GameState {
 	@Override
 	public void render() {
 		Renderer.drawTextureRectangle(backgroundID, 0, 0, 800, 700);
-		Renderer.drawTextureRectangle(testID, 300, 200, 200, 100);
-		
+
+
+		text.render();
 		exit.render();
 	}
 

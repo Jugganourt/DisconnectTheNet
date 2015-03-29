@@ -337,6 +337,8 @@ public class PlayState implements GameState {
 					if (nodeButtons.isEmpty()) {
 						if (lives > 0) {
 							gsm.pushState(new WinState(gsm,lives));
+							gameRunning = false;
+							return;
 						}
 					}
 					if (n.equals(focussed)) {
@@ -344,6 +346,8 @@ public class PlayState implements GameState {
 						System.out.println("You have " + lives + " remaining.");
 						if (lives == 0) {
 							gsm.pushState(new LoseState(gsm, lives));
+							gameRunning = false;
+							return;
 						}
 						Random ran = new Random();
 						int x = ran.nextInt(nodeButtons.size());
