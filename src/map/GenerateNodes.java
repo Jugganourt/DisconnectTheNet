@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import requests.GetLinks;
-import requests.GetLocation;
+import requests.GetInfo;
 
 public class GenerateNodes {
 
@@ -31,9 +31,10 @@ public class GenerateNodes {
 		}
 
 		Node temp = new Node(url);
-		GetLocation loc = new GetLocation(url);
+		GetInfo loc = new GetInfo(url);
 		temp.setLatitude(loc.getLatitude());
 		temp.setLongitude(loc.getLongitude());
+		temp.setTrust(loc.getTrust());
 		urlToNode.put(url, temp);
 
 		for (String site : start.getField("Domain")) {
@@ -45,16 +46,17 @@ public class GenerateNodes {
 
 				if (!urlToNode.containsKey(site)) {
 					Node node = new Node(site);
-					loc = new GetLocation(site);
+					loc = new GetInfo(site);
 					node.setLatitude(loc.getLatitude());
 					node.setLongitude(loc.getLongitude());
+					node.setTrust(loc.getTrust());
 					urlToNode.put(site, node);
 				}
 				if (!urlToNode.containsKey(site2)) {
 					Node node = new Node(site2);
-					loc = new GetLocation(site);
 					node.setLatitude(loc.getLatitude());
 					node.setLongitude(loc.getLongitude());
+					node.setTrust(loc.getTrust());
 					urlToNode.put(site2, node);
 
 				}

@@ -12,16 +12,18 @@ import org.json.JSONObject;
 
 import util.Keys;
 
-public class GetLocation {
+public class GetInfo {
 	
 	private double longitude,latitude;
+	private int trust;
 	
 	private JSONArray results;
-	public GetLocation(String url) {
+	public GetInfo(String url) {
 		JSONObject json = getJson(url);
 		results = json.getJSONObject("DataTables").getJSONObject("DomainsInfo").getJSONArray("Data");
 		longitude = Double.parseDouble(results.getJSONObject(0).getString("Longitude").toString());
 		latitude = Double.parseDouble(results.getJSONObject(0).getString("Latitude").toString());
+		trust = Integer.parseInt(results.getJSONObject(0).getString("TrustFlow"));
 	}
 	
 	private static JSONObject getJson(String url) {
@@ -53,6 +55,10 @@ public class GetLocation {
 
 	public double getLatitude() {
 		return latitude;
+	}
+	
+	public int getTrust(){
+		return trust;
 	}
 
 

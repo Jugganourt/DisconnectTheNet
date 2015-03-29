@@ -102,6 +102,10 @@ public class Node {
 		return this.trust;
 	}
 	
+	public void setTrust(int trust){
+		this.trust = trust;
+	}
+	
 	public int getStatus(){
 		return this.status;
 	}
